@@ -3,3 +3,13 @@
 ################################################################################
 
 /obj/Debug
+/.vs
+/bin/Debug
+/CSKata/bin/Debug
+/CSKata/obj/Debug
+/CSKata/Properties
+/CSKataTests/bin/Debug
+/CSKataTests/obj/Debug
+/CSKataTests/Properties
+/packages
+/Properties
