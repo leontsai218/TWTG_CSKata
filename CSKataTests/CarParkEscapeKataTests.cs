@@ -11,6 +11,8 @@ namespace CSKata.Tests
     [TestClass()]
     public class CarParkEscapeKataTests
     {
+        CarParkEscapeKata _carParkEscapeKata;
+
         [TestMethod]
         public void OneFloorAndParkNextExit()
         {
@@ -68,11 +70,21 @@ namespace CSKata.Tests
             ResultShouldBe(carpark, result);
         }
 
-
+        [TestMethod]
+        public void BasicTest6()
+        {
+            int[,] carpark = new int[,] { { 1, 0, 2, 0, 0 },
+                                          { 1, 0, 0, 0, 0 },
+                                          { 1, 0, 0, 0, 0 },
+                                          { 0, 0, 0, 0, 0 } };
+            string[] result = new string[] { "L2", "D3", "R4" };
+            ResultShouldBe(carpark, result);
+        }
 
         private void ResultShouldBe(int[,] carpark, string[] expected)
         {
-            string[] actual = CarParkEscapeKata.Escape(carpark);
+            _carParkEscapeKata = new CarParkEscapeKata();
+            string[] actual = _carParkEscapeKata.Escape(carpark);
             CollectionAssert.AreEqual(expected, actual);
         }
     }

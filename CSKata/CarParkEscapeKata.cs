@@ -6,58 +6,50 @@ using System.Threading.Tasks;
 
 namespace CSKata
 {
-    public static class CarParkEscapeKata
+    public class CarParkEscapeKata
     {
-        public static string[] Escape(int[,] carpark)
+        public string[] Escape(int[,] carpark)
         {
             var result = new List<string>();
+            var car = new Car(-1);
 
-            int currentPosition = -1;
             for (int i = 0; i < carpark.GetLength(0); i++)
             {
-                var is1stFloor = Is1stFloor(carpark, i);
+                var floor = new Floor(carpark, i);
 
-                int targetPosition = -1;
                 for (int j = 0; j < carpark.GetLength(1); j++)
                 {
-                    var parkCode = carpark[i, j];
-                    if (parkCode == 1)
+                    if (carpark[i, j] == 1)
                     {
-                        targetPosition = j;
+                        floor.TargetIndex = j;
                     }
-                    else if (parkCode == 2)
+                    else if (carpark[i, j] == 2)
                     {
-                        currentPosition = j;
-                    }
-
-                    if (is1stFloor)
-                    {
-                        targetPosition = carpark.GetLength(1) - 1;
+                        car.CurrentIndex = j;
                     }
                 }
 
-                if (currentPosition > -1)
+                if (car.CurrentIndex > -1)
                 {
-                    if (currentPosition != targetPosition)
+                    if (car.CurrentIndex != floor.TargetIndex)
                     {
-                        string direction = currentPosition > targetPosition ? "L" : "R";
-                        result.Add($"{direction}{Math.Abs(currentPosition - targetPosition)}");
-
+                        result.Add(GetMovement(car, floor));
                     }
 
-                    currentPosition = targetPosition;
-                    if (!is1stFloor)
+                    // 非一樓時進行下樓
+                    if (!floor.Is1stFloor)
                     {
-                        int continuousDownCount = 0;
+                        car.CurrentIndex = floor.TargetIndex;
 
-                        while (!Is1stFloor(carpark, i) && carpark[i + 1, currentPosition] == 1)
+                        // 連續下樓
+                        int continuousDownCount = 0;
+                        while (!floor.Is1stFloor && carpark[i + 1, car.CurrentIndex] == 1)
                         {
                             continuousDownCount++;
-                            i += (continuousDownCount);
+                            floor = new Floor(carpark, i++);
                         }
                         result.Add($"D{continuousDownCount + 1}");
                     }
-
                 }
             }
 
@@ -65,9 +57,52 @@ namespace CSKata
             return result.ToArray();
         }
 
-        private static bool Is1stFloor(int[,] carpark, int i)
+        private string GetMovement(Car car, Floor floor)
+        {
+            string direction = car.CurrentIndex > floor.TargetIndex ? "L" : "R";
+            return $"{direction}{Math.Abs(car.CurrentIndex - floor.TargetIndex)}";
+        }
+
+        private bool Is1stFloor(int[,] carpark, int i)
         {
             return i == carpark.GetLength(0) - 1;
         }
+    }
+
+    internal class Floor
+    {
+        private int _level;
+        private int[,] _carpark;
+        private int _targetIndex;
+
+        public Floor(int[,] carpark, int level)
+        {
+            _level = level;
+            _carpark = carpark;
+            TargetIndex = -1;
+        }
+
+        public int TargetIndex
+        {
+            get
+            {
+                return Is1stFloor ? TargetIndex = _carpark.GetLength(1) - 1 : _targetIndex;
+            }
+            set
+            {
+                _targetIndex = value;
+            }
+        }
+        public bool Is1stFloor => _level == _carpark.GetLength(0) - 1;
+
+    }
+
+    internal class Car
+    {
+        public Car(int index)
+        {
+            CurrentIndex = index;
+        }
+        public int CurrentIndex { get; set; }
     }
 }
