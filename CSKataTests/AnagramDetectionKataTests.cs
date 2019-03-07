@@ -14,46 +14,36 @@ namespace CSKata.Tests
         [TestMethod()]
         public void OneLetterAndSameCase()
         {
-            string original = "A";
-            string test = "A";
-
-            Assert.AreEqual(true, AnagramDetectionKata.IsAnagram(test, original));
+            CompareResultShouldBe("A", "A", true);
         }
 
         [TestMethod()]
         public void OneLetterAndDiffentCase()
         {
-            string original = "a";
-            string test = "A";
-
-            Assert.AreEqual(true, AnagramDetectionKata.IsAnagram(test, original));
+            CompareResultShouldBe("a", "A", true);
         }
 
         [TestMethod()]
         public void SameWord()
         {
-            string original = "coffee";
-            string test = "coffee";
-
-            Assert.AreEqual(true, AnagramDetectionKata.IsAnagram(test, original));
+            CompareResultShouldBe("coffee", "coffee", true);
         }
 
         [TestMethod()]
         public void SameLettersSameCount()
         {
-            string original = "toffee";
-            string test = "foefet";
-
-            Assert.AreEqual(true, AnagramDetectionKata.IsAnagram(test, original));
+            CompareResultShouldBe("toffee", "foefet", true);
         }
 
         [TestMethod()]
         public void SameLettersDifferentCount()
         {
-            string original = "apple";
-            string test = "pale";
+            CompareResultShouldBe("apple", "pale", false);
+        }
 
-            Assert.AreEqual(false, AnagramDetectionKata.IsAnagram(test, original));
+        private void CompareResultShouldBe(string original, string test, bool expected)
+        {
+            Assert.AreEqual(expected, AnagramDetectionKata.IsAnagram(test, original));
         }
     }
 }
