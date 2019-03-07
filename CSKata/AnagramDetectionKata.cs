@@ -14,7 +14,7 @@ namespace CSKata
             original = original.ToLower();
 
             var letterPool = new Dictionary<char, int>();
-            foreach(var c in original)
+            foreach (var c in original)
             {
                 if (letterPool.ContainsKey(c))
                 {
@@ -26,7 +26,7 @@ namespace CSKata
                 }
             }
 
-            foreach(var c in test)
+            foreach (var c in test)
             {
                 if (letterPool.ContainsKey(c))
                 {
@@ -35,9 +35,9 @@ namespace CSKata
             }
 
 
-            foreach(var letter in letterPool)
+            foreach (var letter in letterPool)
             {
-                if(letter.Value != 0)
+                if (letter.Value != 0)
                 {
                     return false;
                 }
