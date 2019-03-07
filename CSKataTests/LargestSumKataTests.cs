@@ -46,7 +46,7 @@ namespace CSKata.Tests
 
         private void LargestSumShouldBe(int[] numbers, int expected)
         {
-            Assert.AreEqual(expected, LargestSumKata.LargestSum(numbers));
+            Assert.AreEqual(expected, LargestSumKata.largestSum(numbers));
         }
     }
 }

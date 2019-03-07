@@ -8,101 +8,114 @@ namespace CSKata
 {
     public class CarParkEscapeKata
     {
-        public string[] Escape(int[,] carpark)
+        const int _StaircaseCode = 1;
+        const int _CarCode = 2;
+
+        public string[] escape(int[,] carpark)
+        {
+            return GetMovements(carpark).ToArray();
+        }
+
+        private List<string> GetMovements(int[,] carpark)
         {
             var result = new List<string>();
-            var car = new Car(-1);
+            var floors = GetFloors(carpark);
+            var car = new Car(floors.First().ParkCodes.IndexOf(_CarCode));
 
-            for (int i = 0; i < carpark.GetLength(0); i++)
+            for (int i = 0; i < floors.Count(); i++)
             {
-                var floor = new Floor(carpark, i);
+                var thisFloor = floors.ElementAt(i);
 
-                for (int j = 0; j < carpark.GetLength(1); j++)
+                if (car.CurrentIndex != thisFloor.TargetIndex)
                 {
-                    if (carpark[i, j] == 1)
-                    {
-                        floor.TargetIndex = j;
-                    }
-                    else if (carpark[i, j] == 2)
-                    {
-                        car.CurrentIndex = j;
-                    }
+                    result.Add(car.MoveToStaircase(thisFloor));
                 }
 
-                if (car.CurrentIndex > -1)
+                if (!thisFloor.Is1stFloor && car.CurrentIndex == thisFloor.TargetIndex)
                 {
-                    if (car.CurrentIndex != floor.TargetIndex)
+                    int continuousDownCount = 0;
+                    Floor nextFloor = floors.ElementAt(i + 1);
+                    while (!thisFloor.Is1stFloor &&
+                            nextFloor.TargetIndex == thisFloor.TargetIndex && nextFloor.ParkCodes[nextFloor.TargetIndex] == _StaircaseCode)
                     {
-                        result.Add(GetMovement(car, floor));
+                        continuousDownCount++;
+                        thisFloor = floors.ElementAt(++i);
+                        nextFloor = floors.ElementAt(i + 1);
                     }
-
-                    // 非一樓時進行下樓
-                    if (!floor.Is1stFloor)
-                    {
-                        car.CurrentIndex = floor.TargetIndex;
-
-                        // 連續下樓
-                        int continuousDownCount = 0;
-                        while (!floor.Is1stFloor && carpark[i + 1, car.CurrentIndex] == 1)
-                        {
-                            continuousDownCount++;
-                            floor = new Floor(carpark, i++);
-                        }
-                        result.Add($"D{continuousDownCount + 1}");
-                    }
+                    result.Add($"D{1 + continuousDownCount}");
                 }
             }
 
-
-            return result.ToArray();
+            return result;
         }
 
-        private string GetMovement(Car car, Floor floor)
+        private IEnumerable<Floor> GetFloors(int[,] carpark)
         {
-            string direction = car.CurrentIndex > floor.TargetIndex ? "L" : "R";
-            return $"{direction}{Math.Abs(car.CurrentIndex - floor.TargetIndex)}";
+            var floors = new List<Floor>();
+            int levelCount = carpark.GetLength(0);
+            bool isCarFound = false;
+
+            for (int i = 0; i < levelCount; i++)
+            {
+                var parkCodes = new List<int>();
+                for (int j = 0; j < carpark.GetLength(1); j++)
+                {
+                    int carCode = carpark[i, j];
+                    parkCodes.Add(carCode);
+                    if (carCode == _CarCode)
+                    {
+                        isCarFound = true;
+                    }
+                }
+
+                if (isCarFound)
+                {
+                    floors.Add(new Floor(parkCodes, levelCount - i));
+                }
+            }
+
+            return floors;
         }
 
         private bool Is1stFloor(int[,] carpark, int i)
         {
             return i == carpark.GetLength(0) - 1;
         }
-    }
 
-    internal class Floor
-    {
-        private int _level;
-        private int[,] _carpark;
-        private int _targetIndex;
-
-        public Floor(int[,] carpark, int level)
+        internal class Floor
         {
-            _level = level;
-            _carpark = carpark;
-            TargetIndex = -1;
-        }
+            private int _level;
+            private int _targetIndex { get; set; }
 
-        public int TargetIndex
-        {
-            get
+            public Floor(IEnumerable<int> parkCodes, int level)
             {
-                return Is1stFloor ? TargetIndex = _carpark.GetLength(1) - 1 : _targetIndex;
+                ParkCodes = parkCodes.ToList();
+                _level = level;
+                _targetIndex = Is1stFloor ? (ParkCodes.Count - 1) : ParkCodes.IndexOf(_StaircaseCode);
             }
-            set
-            {
-                _targetIndex = value;
-            }
+
+            public List<int> ParkCodes;
+            public int TargetIndex => _targetIndex;
+            public bool Is1stFloor => _level == 1;
+
         }
-        public bool Is1stFloor => _level == _carpark.GetLength(0) - 1;
 
-    }
-
-    internal class Car
-    {
-        public Car(int index)
+        internal class Car
         {
-            CurrentIndex = index;
+            public Car(int index)
+            {
+                CurrentIndex = index;
+            }
+            public int CurrentIndex { get; set; }
+
+            public string MoveToStaircase(Floor floor)
+            {
+
+                string direction = CurrentIndex > floor.TargetIndex ? "L" : "R";
+                int count = Math.Abs(CurrentIndex - floor.TargetIndex);
+                CurrentIndex = floor.TargetIndex;
+                return $"{direction}{count}";
+            }
         }
-        public int CurrentIndex { get; set; }
     }
 }

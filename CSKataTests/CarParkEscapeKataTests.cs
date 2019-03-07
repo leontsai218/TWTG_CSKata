@@ -84,7 +84,7 @@ namespace CSKata.Tests
         private void ResultShouldBe(int[,] carpark, string[] expected)
         {
             _carParkEscapeKata = new CarParkEscapeKata();
-            string[] actual = _carParkEscapeKata.Escape(carpark);
+            string[] actual = _carParkEscapeKata.escape(carpark);
             CollectionAssert.AreEqual(expected, actual);
         }
     }

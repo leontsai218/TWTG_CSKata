@@ -8,7 +8,7 @@ namespace CSKata
 {
     public static class LargestSumKata
     {
-        public static int LargestSum(IEnumerable<int> numbers)
+        public static int largestSum(IEnumerable<int> numbers)
         {
             int maxSum = 0;
             int sum = 0;
