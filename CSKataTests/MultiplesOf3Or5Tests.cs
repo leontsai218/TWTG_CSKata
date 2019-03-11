@@ -29,6 +29,12 @@ namespace CSKata.Tests
             ResultShouldBe(20, 78);
         }
 
+        [TestMethod()]
+        public void EdgeSituation()
+        {
+            ResultShouldBe(22, 119);
+        }
+
         private static void ResultShouldBe(int value, int expected)
         {
             Assert.AreEqual(expected, MultiplesOf3Or5.Solution(value));
