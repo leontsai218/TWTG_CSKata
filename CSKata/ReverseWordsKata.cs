@@ -10,17 +10,7 @@ namespace CSKata
     {
         public static string ReverseWords(string str)
         {
-            return string.Join(" ", str.Split(' ').Select(w => ReverseWord(w)));
-        }
-
-        private static string ReverseWord(string str)
-        {
-            StringBuilder sb = new StringBuilder();
-            for (int i = str.Length - 1; i >= 0; i--)
-            {
-                sb.Append(str[i]);
-            }
-            return sb.ToString();
+            return string.Join(" ", str.Split(' ').Select(w => new string(w.Reverse().ToArray())));
         }
     }
 }
