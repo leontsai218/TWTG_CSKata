@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace CSKata.Tests
 {
-    //[Ignore]
     [TestClass()]
     public class CountingChangeCombinationsKataTests
     {
